@@ -179,6 +179,7 @@ mod delay {
 
 /// SPI (blocking)
 mod spi {
+    use eh1_0::spi::ErrorType;
     use super::{Forward, ForwardError};
 
     impl<E: core::fmt::Debug> eh1_0::spi::Error for ForwardError<E> {
@@ -296,39 +297,6 @@ mod i2c {
             });
 
             self.inner.exec_iter(address, ops).map_err(ForwardError)
-        }
-    }
-}
-
-/// Serial (UART etc.)
-mod serial {
-    use super::{Forward, ForwardError};
-
-    impl<E: core::fmt::Debug> eh1_0::serial::Error for ForwardError<E> {
-        fn kind(&self) -> eh1_0::serial::ErrorKind {
-            eh1_0::serial::ErrorKind::Other
-        }
-    }
-
-    impl<T, E> eh1_0::serial::ErrorType for Forward<T>
-    where
-        T: eh0_2::blocking::serial::Write<u8, Error = E>,
-        E: core::fmt::Debug,
-    {
-        type Error = ForwardError<E>;
-    }
-
-    impl<T, E> eh1_0::serial::Write<u8> for Forward<T>
-    where
-        T: eh0_2::blocking::serial::Write<u8, Error = E>,
-        E: core::fmt::Debug,
-    {
-        fn write(&mut self, words: &[u8]) -> Result<(), Self::Error> {
-            self.inner.bwrite_all(words).map_err(ForwardError)
-        }
-
-        fn flush(&mut self) -> Result<(), Self::Error> {
-            self.inner.bflush().map_err(ForwardError)
         }
     }
 }

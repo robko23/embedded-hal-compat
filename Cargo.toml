@@ -22,7 +22,7 @@ features = [ "unproven" ]
 
 [dependencies.eh1_0]
 package = "embedded-hal"
-version = "=1.0.0-alpha.11"
+version = "=1.0.0-rc.1"
 
 [package.metadata.docs.rs]
 # To build locally:
